@@ -6,6 +6,8 @@ This project demonstrates a basic implementation of a Model Context Protocol (MC
 
 The Model Context Protocol (MCP) is a specification for how AI models can interact with external tools and data sources in a standardized way. This project provides a simple server that adheres to this protocol.
 
+This server utilizes the `@modelcontextprotocol/typescript-sdk` and specifically implements the `StreamableHTTPServerTransport` using the `express` framework. This means it functions as a standard HTTP server, capable of handling streaming responses, and can be deployed and accessed remotely as a remote MCP server.
+
 ## Requirements
 
 To run and test this project, you need the following installed:
