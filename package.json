@@ -1,0 +1,37 @@
+{
+  "name": "mcp-agent-basic",
+  "version": "1.0.0",
+  "description": "MCP Agent Basic",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "inspect": "npx -y @modelcontextprotocol/inspector npx -y tsx src/index.ts",
+    "start": "tsx src/index.ts"
+  },
+  "keywords": [
+    "mcp",
+    "agent",
+    "basic"
+  ],
+  "author": "Victor Calle",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.15.3",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "eslint": "^9.26.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "@langchain/core": "^0.3.51",
+    "@langchain/langgraph": "^0.2.67",
+    "@modelcontextprotocol/sdk": "^1.11.0",
+    "@pinecone-database/pinecone": "^5.1.2",
+    "better-sqlite3": "^11.9.1",
+    "dotenv": "^16.5.0",
+    "zod": "^3.24.3"
+  }
+}
