@@ -4,6 +4,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
 import { z } from 'zod';
+import { readFile } from 'fs/promises';
 
 const app = express();
 app.use(express.json());
@@ -36,6 +37,23 @@ app.post('/mcp', async (req, res) => {
       name: 'VC MCP Agent',
       version: '1.0.0'
     });
+
+    server.tool(
+        'which-version',
+        'Returns the current version of the MCP Agent',
+        {},
+        async () => {
+            const version = await readFile('version.txt', 'utf-8').then(content => 
+                content.split('\n')[0].trim()
+            );
+            return {
+                content: [{
+                    type: 'text',
+                    text: version
+                }]
+            }
+        }
+    );
 
     server.tool(
         'add',
