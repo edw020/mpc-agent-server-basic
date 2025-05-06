@@ -1,6 +1,6 @@
 {
   "name": "mcp-agent-basic",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "MCP Agent Basic",
   "main": "index.js",
   "type": "module",

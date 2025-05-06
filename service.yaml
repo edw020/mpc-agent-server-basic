@@ -1,0 +1,36 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: mpc-agent-server-basic
+  labels:
+    cloud.googleapis.com/location: us-east1
+spec:
+  template:
+    metadata:
+      annotations:
+        autoscaling.knative.dev/maxScale: '1'
+        run.googleapis.com/startup-cpu-boost: 'false'
+    spec:
+      containerConcurrency: 10
+      # IMPORTANT: Update serviceAccountName for the target GCP project/account
+      # Or remove if you want to use the default Compute Engine service account
+      serviceAccountName: <YOUR_SERVICE_ACCOUNT>@developer.gserviceaccount.com
+      containers:
+      # IMPORTANT: Update the image path to your container registry and desired tag
+      - image: rok0sbasilisk/mpc-agent-server-basic:1.0.3
+        ports:
+        - name: http1
+          containerPort: 3001 # Port your application listens on
+        resources:
+          limits:
+            cpu: 1000m # 1 vCPU
+            memory: 512Mi
+        startupProbe:
+          timeoutSeconds: 240
+          periodSeconds: 240
+          failureThreshold: 1
+          tcpSocket:
+            port: 3001 # Must match containerPort
+  traffic:
+  - percent: 100
+    latestRevision: true
