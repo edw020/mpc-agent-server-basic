@@ -34,6 +34,75 @@ You can easily run and test this MCP server using the **MCP Inspector**, a dedic
 For more detailed information on using the MCP Inspector, refer to its official documentation:
 [https://github.com/modelcontextprotocol/inspector](https://github.com/modelcontextprotocol/inspector)
 
+## Running from Docker image
+
+If you want to use the project as a docker image, which is another common usage for MCPs as a more portable service, follow these steps:
+
+1.  **Install Docker:** can be the cli or the desktop version. The point is to have docker daemon running locally
+2.  **Build the Docker image by using the following command:**
+    
+    ```bash
+    docker build -t <your_dockerhub_user>/mpc-agent-server-basic:<tag> .
+    ```
+
+3.  **Push to your Dockerhub by using the command:** (Optional if you don't need to deploy the container to cloud)
+
+    ```bash
+    docker push <your_dockerhub_user>/mpc-agent-server-basic:<tag>
+    ```
+
+4.  **Run the docker image with this command:**
+
+    ```bash
+    docker run -i -p 3001:3001 --rm <your_dockerhub_user>/mpc-agent-server-basic:<tag>
+    ```
+5.  **Start the MCP inspector client:**
+
+    ```bash
+    npx -y @modelcontextprotocol/inspector
+    ```
+
+6.  **Open the inspector client site:** `http://localhost:6274`
+7.  **Interact with your server:** Use the Inspector UI to connect to your docker server (URL=`http:localhost:3001/mcp`), view available tools, and make test requests.
+
+## Running from GCP Run instance
+
+If you want to deploy your MCP as a docker image to use it as a remote service, follow the next steps
+
+1.  **For this case you need to have a GCP cloud account with Cloud Run enabled**
+2.  **Install GCloud CLI and set up your CLI user** [https://cloud.google.com/sdk/docs/install](https://cloud.google.com/sdk/docs/install)
+3.  **Be sure you have a Docker build published to Dockerhub** (Optional)
+    - If you want to use the published image from my dockerhub account you don't need to build an image by yourself. Otherwise, check the next details.
+    - You can check on the previous section for guidance on building a docker image.
+    - **Important** the docker image should be published as an linux amd64 os container. If you are building from an Apple silicon processor machine, you need to publish the docker image like this
+        ```bash
+        docker buildx build --platform linux/amd64 -t <your_dockerhub_user>/mpc-agent-server-basic:<tag> . 
+        ```
+4.  **Use GCloud CLI for deploying the docker image to a Run instance**
+    - In the root you'll see service.yaml file which you will use as deployment config file.
+    - On the serviceAccountName section be sure to use a valid Service Account from your GCP namespace.
+    - On the containers/image section the image created was set as default, but you can replace it with your dockerhub image path if you want.
+    - Use this command for gcloud deployment 
+        ```bash
+        gcloud run services replace service.yaml --region us-east1 
+        ```
+
+5.  **Go to the GCP console on the Run section:** [https://console.cloud.google.com/run](https://console.cloud.google.com/run)
+
+    - Your Run instance should be deployed and fully serving (Revisions Tab)
+    - Before testing with inspector, go to the Security tab and temporarily disable the Cloud IAM authentication, so the inspector can request to your instance with no problem.
+    - Now check the URL assigned to the Run instance, should be something like this `https://us-east-1-<YOUR-PROJECT-ID>.cloudrun.net/mpc-agent-server-basic`. You'll use it as the server URL on the MCP inspector
+
+6.  **Start the MCP inspector client:**
+
+    ```bash
+    npx -y @modelcontextprotocol/inspector
+    ```
+
+6.  **Open the inspector client site:** `http://localhost:6274`
+7.  **Interact with your server:** Use the Inspector UI to connect to your Cloud Run server (URL=`<YOUR_RUN_SERVICE_URL>/mcp`), view available tools, and make test requests.
+
+
 ## Built With
 
 *   **[@modelcontextprotocol/typescript-sdk](https://github.com/modelcontextprotocol/typescript-sdk):** The official TypeScript SDK for building MCP servers and clients. This project utilizes the SDK to define the server structure and tools according to the MCP specification.
